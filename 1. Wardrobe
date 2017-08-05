@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+class Wardrobe
+{
+    static void Main(string[] args)
+    {
+        int n = int.Parse(Console.ReadLine());
+        string[] arrowSplitter = new string[] { " -> " };
+        int indexClothFound = new int();
+        Dictionary<string, List<string>> wardrobe = new Dictionary<string, List<string>>();
+
+        for (int i = 0; i < n; i++)
+        {
+            string[] input = Console.ReadLine().Split(arrowSplitter, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            string color = input[0];
+            List<string> clothes = input[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            for (int x = 0; x < clothes.Count; x++)
+            {
+                if (!wardrobe.ContainsKey(color))
+                {
+                    wardrobe.Add(color, new List<string>());
+                }
+                wardrobe[color].Add(clothes[x]);
+            }
+        }
+        string[] toFind = Console.ReadLine().Split(' ').ToArray();
+        foreach (var item in wardrobe)
+        {
+            Dictionary<string, int> numberOfClothes = new Dictionary<string, int>() ;
+            bool colorMatch = false;
+            bool clothMatch = false;
+            string colorToPrint = item.Key;
+            List<string> clothesToPrint = item.Value;
+
+            if (colorToPrint ==toFind[0])
+            {
+                colorMatch = true;
+            }
+            if (clothesToPrint.Contains(toFind[1]))
+            {
+                indexClothFound = clothesToPrint.IndexOf(toFind[1]);
+                clothMatch = true;
+            }
+            Console.WriteLine($"{colorToPrint} clothes:");
+
+            CheckNumDuplicates(clothesToPrint,numberOfClothes);
+           
+            clothesToPrint = clothesToPrint.Distinct().ToList();
+                for (int i = 0; i < clothesToPrint.Count; i++)
+            {
+                if (clothMatch && colorMatch && i == indexClothFound)
+                {
+                        Console.WriteLine($"* {clothesToPrint[i]} - {numberOfClothes[clothesToPrint[i]]} ({"found!"})");
+                        colorMatch = false;
+                        clothMatch = false;
+                        indexClothFound = new int();
+                }
+                else 
+                {
+                    Console.WriteLine($"* {clothesToPrint[i]} - {numberOfClothes[clothesToPrint[i]]}");
+                }
+            }
+        }
+    }
+    private static void CheckNumDuplicates(List<string> clothesToPrint, Dictionary<string, int> numberOfClothes)
+    {
+        for (int i = 0; i < clothesToPrint.Count; i++)
+        {
+            if (!numberOfClothes.ContainsKey(clothesToPrint[i]))
+            {
+                numberOfClothes.Add(clothesToPrint[i], 0);
+            }
+            numberOfClothes[clothesToPrint[i]]++;
+        }
+    }
+}
