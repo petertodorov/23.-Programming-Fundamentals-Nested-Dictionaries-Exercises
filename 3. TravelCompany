@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+class TravelCompany
+{
+    static void Main(string[] args)
+    {
+        Dictionary<string, Dictionary<string, int>> cityVehiclePark = new Dictionary<string, Dictionary<string, int>>();
+        while (true)
+        {
+            string[] input = Console.ReadLine().Split(':').ToArray();
+            if (input.Contains("ready"))
+            {
+                break;
+            }
+            else
+            {
+                string city = input[0];
+                string[] vehicleData = input[1].Split(',').ToArray();
+                string vehicleType = string.Empty;
+                int vehicleCapacity = new int();
+
+                for (int i = 0; i < vehicleData.Length; i++)
+                {
+                    string[] typeCapacity = vehicleData[i].Split('-').ToArray();
+                    vehicleType = typeCapacity[0];
+                    vehicleCapacity = int.Parse(typeCapacity[1]);
+                    if (!cityVehiclePark.ContainsKey(city))
+                    {
+                        cityVehiclePark.Add(city, new Dictionary<string, int>());
+                    }
+                    if (!cityVehiclePark[city].ContainsKey(vehicleType))
+                    {
+                        cityVehiclePark[city].Add(vehicleType, new int());
+                    }
+                    cityVehiclePark[city][vehicleType] = vehicleCapacity;
+                }
+            }
+        }
+        Dictionary<string, int> cityCombinedCapacity = new Dictionary<string, int>();
+        foreach (var item in cityVehiclePark)
+        {
+            int temp =  item.Value.Values.Sum();
+            cityCombinedCapacity.Add(item.Key, temp);
+        }
+        Dictionary<string, int> groupsData = new Dictionary<string, int>();
+        string destination = string.Empty;
+        int groupSize = new int();
+
+        groupsData = FindGroupsData(destination, groupSize, groupsData);
+
+        foreach (var group in groupsData)
+        {
+            foreach (var item in cityCombinedCapacity)
+            {
+                if (group.Key == item.Key)
+                {
+                    if (group.Value <= item.Value)
+                    {
+                        Console.WriteLine($"{group.Key} -> all {group.Value} accommodated");
+                    }
+                    else if (group.Value > item.Value)
+                    {
+                        int result = Math.Abs(group.Value - item.Value);
+                        Console.WriteLine($"{group.Key} -> all except {result} accommodated");
+                    }
+                }
+            }
+        }
+    }
+
+    private static Dictionary<string, int> FindGroupsData(string destination, int groupSize, Dictionary<string, int> groupsData)
+    {
+        while (true)
+        {
+            string[] groups = Console.ReadLine().Split(' ');
+            if (groups.Contains("travel"))
+            {
+                break;
+            }
+            else
+            {
+                destination = groups[0];
+                groupSize = int.Parse(groups[1]);
+                groupsData.Add(destination, groupSize);
+            }
+        }
+        return groupsData;
+    }
+}
