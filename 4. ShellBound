@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+class Shellbound
+{
+    static void Main(string[] args)
+    {
+        Dictionary<string, List<int>> regionShells = new Dictionary<string, List<int>>();
+        string[] input = Console.ReadLine().Split(' ');
+        while (input[0]!="Aggregate")
+        {
+            string region = input[0];
+            int shellAmount = int.Parse(input[1]);
+            if (!regionShells.ContainsKey(region))
+            {
+                regionShells.Add(region, new List<int>());
+            }
+            if (!regionShells[region].Contains(shellAmount))
+            {
+                regionShells[region].Add(shellAmount);
+            }
+            input = Console.ReadLine().Split(' ');
+        }
+        double giantShell = new double();
+        foreach (var element in regionShells)
+        {
+            string regionToPRint = element.Key;
+            string toPrint =String.Join(", ", element.Value);
+            double sum = element.Value.Sum();
+            double average = element.Value.Average();
+            giantShell = sum - average;
+            Console.WriteLine("{0} -> {1} ({2:0})",regionToPRint,toPrint,giantShell);
+        }
+    }
+}
