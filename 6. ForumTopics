@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+class ForumTopics
+{
+    static void Main(string[] args)
+    {
+        Dictionary<string, List<string>> forumList = new Dictionary<string, List<string>>();
+        string[] splitter = new string[] { " -> " };
+        while (true)
+        {
+            string[] input = Console.ReadLine().Split(splitter, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+            if (input[0] == "filter")
+            {
+                break;
+            }
+            else
+            {
+                List<string> tags = input[1].Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList(); ;
+                string forumName = input[0];
+                for (int i = 0; i < tags.Count; i++)
+                {
+                    if (!forumList.ContainsKey(forumName))
+                    {
+                        forumList.Add(forumName, new List<string>());
+                    }
+                    if (forumList[forumName].Contains(tags[i]))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        forumList[forumName].Add(tags[i]);
+                    }
+
+                }
+            }
+        }
+        string[] filter = Console.ReadLine().Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+        foreach (var item in forumList)
+        {
+            if (filter.All(x=>item.Value.Contains(x)))
+            {
+                Console.WriteLine($"{item.Key} | {string.Join(", ", item.Value.Select(x => "#" + x))}");
+            }
+        }
+    }
+}
