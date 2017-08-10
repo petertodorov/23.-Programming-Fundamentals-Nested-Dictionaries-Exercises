@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+class SocialMediaPosts
+{
+    static Dictionary<string, int> postLikes = new Dictionary<string, int>();
+    static Dictionary<string, int> postDislikes = new Dictionary<string, int>();
+    static Dictionary<string, Dictionary<string, string>> postComments = new Dictionary<string, Dictionary<string, string>>();
+
+
+    static void Main(string[] args)
+    {
+        string input = Console.ReadLine();
+        while (input != "drop the media")
+        {
+            string[] tokens = input.Split(' ');
+            string command = tokens[0];
+            string name = tokens[1];
+
+            switch (command)
+            {
+                case "post":
+                    {
+                        CreatePost(name);
+                        break;
+
+                    }
+                case "like":
+                    {
+                        AddLikes(name);
+                        break;
+                    }
+                case "dislike":
+                    {
+                        AddDislikes(name);
+                        break;
+                    }
+                case "comment":
+                    {
+                        string comentator = tokens[2];
+                        string commentContents = string.Join(" ", tokens.Skip(3));
+                        CreateComment(name, comentator, commentContents);
+                        break;
+                    }
+            }
+            input = Console.ReadLine();
+        }
+       
+        foreach (var item in postComments)
+        {
+            Dictionary<string, string> commentsToPrint = item.Value;
+            
+            string nameToPrint = item.Key;
+            int likes = postLikes[nameToPrint];
+            int dislikes = postDislikes[nameToPrint];
+            Console.WriteLine($"Post: {nameToPrint} | Likes: {likes} | Dislikes: {dislikes}");
+            Console.WriteLine("Comments:");
+            if (commentsToPrint.Count == 0)
+            {
+                Console.WriteLine("None");
+            }
+            foreach (var com in commentsToPrint)
+            {
+                Console.WriteLine($"{"*  "+ com.Key}: {com.Value}");
+            }
+        }
+        
+    }
+
+    private static void CreateComment(string name, string comentator, string commentContents)
+    {
+        postComments[name].Add(comentator, commentContents);
+    }
+
+    private static void AddDislikes(string name)
+    {
+        postDislikes[name]++;
+    }
+
+    private static void AddLikes(string name)
+    {
+        postLikes[name]++;
+    }
+
+    private static void CreatePost(string name)
+    {
+        postLikes.Add(name, new int());
+        postDislikes.Add(name, new int());
+        postComments.Add(name, new Dictionary<string, string>());
+    }
+}
